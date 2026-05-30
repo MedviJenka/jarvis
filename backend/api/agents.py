@@ -4,6 +4,7 @@ from backend.core.settings import Config
 from backend.services.claude_parser import (
     parse_all_agents, parse_all_commands, build_linked_commands
 )
+from backend.services import db
 
 router = APIRouter()
 
@@ -21,6 +22,11 @@ class AgentResponse(BaseModel):
     system_prompt_preview: str
     linked_commands: list[str] = []
     has_memory: bool
+    # health fields
+    status: str = "unknown"
+    run_count: int = 0
+    error_count: int = 0
+    last_run_at: str | None = None
 
 
 class AgentListResponse(BaseModel):
@@ -42,6 +48,11 @@ class AgentCreateResponse(BaseModel):
     files_created: list[str]
 
 
+class StatusOverrideRequest(BaseModel):
+    status: str  # healthy | degraded | error | deprecated
+    note: str | None = None
+
+
 def _get_agents_with_links():
     claude_dir = Config.claude_path
     agents = parse_all_agents(claude_dir)
@@ -49,6 +60,8 @@ def _get_agents_with_links():
     links = build_linked_commands(agents, commands)
     for a in agents:
         a["linked_commands"] = links.get(a["name"], [])
+        health = db.get_agent_health(a["name"])
+        a.update(health)
     return agents
 
 
@@ -67,6 +80,12 @@ def get_agent(name: str):
     raise HTTPException(status_code=404, detail=f"Agent '{name}' not found")
 
 
+@router.post("/{name}/status")
+def override_agent_status(name: str, body: StatusOverrideRequest):
+    db.set_status_override(name, body.status, body.note)
+    return {"ok": True}
+
+
 @router.post("/create", response_model=AgentCreateResponse)
 async def create_agent(body: AgentCreateRequest):
     from backend.ai.agents.agent_generator.flow import AgentGeneratorFlow, AgentGeneratorState
@@ -80,7 +99,6 @@ async def create_agent(body: AgentCreateRequest):
     flow = AgentGeneratorFlow()
     flow.state = state
     result = await flow.kickoff_async()
-    # Re-parse to get the newly created agent
     agents = _get_agents_with_links()
     created = next((a for a in agents if a["name"] == body.name), None)
     if not created:

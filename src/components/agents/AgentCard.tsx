@@ -5,6 +5,7 @@ import type { Agent } from '../../types';
 import { GlassCard } from '../ui/GlassCard';
 import { CategoryBadge } from '../ui/CategoryBadge';
 import { ModelBadge } from '../ui/ModelBadge';
+import { StatusBadge } from '../ui/StatusBadge';
 import { CATEGORY_COLORS } from '../../utils/categoryColors';
 
 interface Props { agent: Agent }
@@ -20,7 +21,10 @@ export function AgentCard({ agent }: Props) {
     >
       <div className="flex items-start justify-between gap-2 mb-3">
         <CategoryBadge category={agent.category} />
-        <ModelBadge model={agent.model} />
+        <div className="flex items-center gap-1.5">
+          <StatusBadge status={agent.status} />
+          <ModelBadge model={agent.model} />
+        </div>
       </div>
       <h3 className="font-mono text-sm font-semibold text-white mb-2 group-hover:text-indigo-300 transition-colors">
         {agent.name}
@@ -43,6 +47,9 @@ export function AgentCard({ agent }: Props) {
         )}
         {agent.has_memory && (
           <span className="text-indigo-400">● memory</span>
+        )}
+        {agent.run_count > 0 && (
+          <span className="ml-auto text-slate-600">{agent.run_count} runs</span>
         )}
       </div>
     </GlassCard>
