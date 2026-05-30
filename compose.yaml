@@ -12,6 +12,7 @@ services:
     volumes:
       - ./.claude:/app/.claude:ro
       - ./.env:/app/.env:ro
+      - jarvis_db:/app/backend/data
     environment:
       - CLAUDE_DIR=/app/.claude
     env_file:
@@ -56,3 +57,6 @@ services:
 
 networks:
   app:
+
+volumes:
+  jarvis_db:
