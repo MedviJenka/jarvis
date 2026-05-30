@@ -1,25 +1,27 @@
 import React from 'react';
-import logo from './logo.svg';
-import './App.css';
+import { BrowserRouter, Routes, Route } from 'react-router-dom';
+import { AppLayout } from './components/layout/AppLayout';
+import { DashboardPage } from './pages/DashboardPage';
+import { AgentGalleryPage } from './pages/AgentGalleryPage';
+import { AgentDetailPage } from './pages/AgentDetailPage';
+import { PipelinesPage } from './pages/PipelinesPage';
+import { AgentCreatorPage } from './pages/AgentCreatorPage';
+import { PipelineBuilderPage } from './pages/PipelineBuilderPage';
 
 function App() {
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.tsx</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
+    <BrowserRouter>
+      <AppLayout>
+        <Routes>
+          <Route path="/" element={<DashboardPage />} />
+          <Route path="/agents" element={<AgentGalleryPage />} />
+          <Route path="/agents/:name" element={<AgentDetailPage />} />
+          <Route path="/pipelines" element={<PipelinesPage />} />
+          <Route path="/create/agent" element={<AgentCreatorPage />} />
+          <Route path="/create/pipeline" element={<PipelineBuilderPage />} />
+        </Routes>
+      </AppLayout>
+    </BrowserRouter>
   );
 }
 

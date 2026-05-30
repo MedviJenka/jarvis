@@ -1,0 +1,80 @@
+design_spec:
+  description: >
+    Design a complete Claude Code agent specification for this request:
+
+    Name: {name}
+    User Description: {user_description}
+    Category: {category}
+    Tools: {tools}
+    Extra Context: {extra_context}
+
+    Produce a structured specification as a JSON object with:
+    - name: canonical slug (lowercase-hyphenated)
+    - description: one sentence (under 150 chars) describing when to use this agent
+    - category: one of backend/review/infrastructure/frontend/domain/testing/bizdev
+    - model: "opus" for architects/planners, "sonnet" for reviewers, "haiku" for simple tasks
+    - color: one of cyan/blue/orange/purple/green/pink/red/yellow/magenta/sky/amber/fuchsia
+    - tools: list of tool names (Glob, Grep, Read, Edit, Write, Bash, WebFetch, WebSearch)
+    - system_prompt: minimum 300-word system prompt covering role, responsibilities, methodology, output format
+    - command_name: slug for the slash command (e.g. "review-api" for /review-api)
+    - skill_description: one sentence description for the skill file
+  expected_output: >
+    A valid JSON object with all fields: name, description, category, model, color,
+    tools (as array), system_prompt, command_name, skill_description
+  agent: spec_designer
+
+write_files:
+  description: >
+    Using the agent spec from the previous task, generate exact file contents for three files.
+
+    AGENT FILE FORMAT (.claude/agents/{name}.md):
+    ---
+    name: {name}
+    description: "{description with escaped quotes}"
+    tools: Tool1, Tool2, Tool3
+    model: {model}
+    color: {color}
+    memory: project
+    skill: {name}
+    ---
+
+    {system_prompt_body}
+
+    SKILL FILE FORMAT (.claude/skills/{name}/SKILL.md):
+    ---
+    name: {name}
+    description: {skill_description}
+    ---
+
+    # {Display Name}
+
+    {one paragraph what it does}
+
+    Use when:
+    - {bullet points}
+
+    COMMAND FILE FORMAT (.claude/commands/{command_name}.md):
+    ---
+    description: {skill_description}
+    ---
+
+    # {Display Name}
+
+    {brief what it does}
+
+    Use when:
+    - {bullets}
+
+    ## Usage
+    ```
+    /{command_name} <describe task>
+    ```
+
+    Spawn the `{name}` agent using the Task tool. Pass $ARGUMENTS as the task.
+
+  expected_output: >
+    A valid JSON object with fields: agent_md (full agent file content),
+    skill_md (full SKILL.md content), command_md (full command file content)
+  context:
+    - design_spec
+  agent: file_writer
