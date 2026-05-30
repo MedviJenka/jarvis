@@ -3,7 +3,7 @@ import uuid
 from datetime import datetime, timezone
 from pathlib import Path
 
-DB_PATH = Path(__file__).parent.parent / "jarvis.db"
+DB_PATH = Path(__file__).parent.parent / "data" / "jarvis.db"
 
 
 def _conn() -> sqlite3.Connection:
@@ -13,6 +13,7 @@ def _conn() -> sqlite3.Connection:
 
 
 def init_db():
+    DB_PATH.parent.mkdir(parents=True, exist_ok=True)
     with _conn() as conn:
         conn.execute("""
             CREATE TABLE IF NOT EXISTS agent_runs (
