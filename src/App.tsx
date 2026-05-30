@@ -7,6 +7,7 @@ import { AgentDetailPage } from './pages/AgentDetailPage';
 import { PipelinesPage } from './pages/PipelinesPage';
 import { AgentCreatorPage } from './pages/AgentCreatorPage';
 import { PipelineBuilderPage } from './pages/PipelineBuilderPage';
+import { RunHistoryPage } from './pages/RunHistoryPage';
 
 function App() {
   return (
@@ -17,6 +18,7 @@ function App() {
           <Route path="/agents" element={<AgentGalleryPage />} />
           <Route path="/agents/:name" element={<AgentDetailPage />} />
           <Route path="/pipelines" element={<PipelinesPage />} />
+          <Route path="/runs" element={<RunHistoryPage />} />
           <Route path="/create/agent" element={<AgentCreatorPage />} />
           <Route path="/create/pipeline" element={<PipelineBuilderPage />} />
         </Routes>

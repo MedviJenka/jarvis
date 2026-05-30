@@ -1,11 +1,12 @@
 import React from 'react';
 import { NavLink } from 'react-router-dom';
-import { LayoutDashboard, Bot, GitBranch, Plus, Workflow, Cpu } from 'lucide-react';
+import { LayoutDashboard, Bot, GitBranch, Plus, Workflow, Cpu, Activity } from 'lucide-react';
 
 const NAV_ITEMS = [
   { to: '/', label: 'Dashboard', icon: LayoutDashboard },
   { to: '/agents', label: 'Agents', icon: Bot },
   { to: '/pipelines', label: 'Pipelines', icon: GitBranch },
+  { to: '/runs', label: 'Run History', icon: Activity },
   { to: '/create/agent', label: 'New Agent', icon: Plus },
   { to: '/create/pipeline', label: 'New Pipeline', icon: Workflow },
 ];
