@@ -37,7 +37,7 @@ def parse_all_agents(claude_dir: Path) -> list[dict]:
         return results
     for md_file in sorted(agents_dir.glob("*.md")):
         try:
-            post = frontmatter.load(str(md_file))
+            post = frontmatter.loads(md_file.read_text(encoding="utf-8-sig"))
             name = post.get("name", md_file.stem)
             desc_full = str(post.get("description", ""))
             tools_raw = post.get("tools", "")
@@ -72,7 +72,7 @@ def parse_all_skills(claude_dir: Path) -> list[dict]:
         if not skill_md.exists():
             continue
         try:
-            post = frontmatter.load(str(skill_md))
+            post = frontmatter.loads(skill_md.read_text(encoding="utf-8-sig"))
             results.append({
                 "name": post.get("name", skill_dir.name),
                 "description": str(post.get("description", "")),
@@ -90,7 +90,7 @@ def parse_all_commands(claude_dir: Path) -> list[dict]:
         return results
     for md_file in sorted(commands_dir.glob("*.md")):
         try:
-            post = frontmatter.load(str(md_file))
+            post = frontmatter.loads(md_file.read_text(encoding="utf-8-sig"))
             body = post.content or ""
             # detect agent refs: look for subagent_type or agent names mentioned
             agent_refs = re.findall(r'subagent_type["\s:=]+([a-z-]+)', body)
